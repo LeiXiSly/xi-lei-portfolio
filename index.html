@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>席磊 | Slyyy · Muhammad Ali — Digital Media Artist / Curator / SSR Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200;400;700;900&family=DM+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #12121c;
+    --text: #e8e8f0;
+    --text-dim: #7878a0;
+    --accent: #00f0ff;
+    --accent2: #b388ff;
+    --accent3: #ff6ec7;
+    --glow: rgba(0, 240, 255, 0.15);
+    --radius: 2px;
+    --font-display: 'Unbounded', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+    --font-cn: 'Noto Serif SC', serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); }
+
+  /* Canvas BG */
+  #particle-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  /* Noise overlay */
+  .noise {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+
+  /* Sections */
+  section { position: relative; z-index: 2; padding: 0; }
+  .container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+
+  /* ——— HERO ——— */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  #hero .container { text-align: center; padding: 2rem; }
+  .hero-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    animation: fadeUp 1s 0.2s both;
+  }
+  .hero-name {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 10vw, 8rem);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    animation: fadeUp 1s 0.4s both;
+  }
+  .hero-name-cn {
+    font-family: var(--font-cn);
+    font-size: clamp(1.2rem, 3vw, 2.2rem);
+    font-weight: 400;
+    color: var(--text-dim);
+    margin-top: 0.5rem;
+    animation: fadeUp 1s 0.6s both;
+  }
+  .hero-title {
+    font-family: var(--font-mono);
+    font-size: clamp(0.85rem, 1.5vw, 1.2rem);
+    color: var(--text-dim);
+    margin-top: 1.5rem;
+    letter-spacing: 0.05em;
+    animation: fadeUp 1s 0.8s both;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 2;
+  }
+  .hero-title span {
+    display: inline-block;
+    padding: 0.2rem 0.8rem;
+    border: 1px solid rgba(255,255,255,0.06);
+    margin: 0.2rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    background: rgba(255,255,255,0.02);
+  }
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: fadeUp 1s 1.2s both, bounce 2s 2s infinite;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    cursor: pointer;
+  }
+  .hero-scroll::after {
+    content: '';
+    display: block;
+    width: 1px; height: 40px;
+    background: var(--accent);
+    margin: 0.8rem auto 0;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* Glitch text effect on hero name hover */
+  .glitch-wrapper { position: relative; display: inline-block; }
+  .glitch-wrapper:hover .hero-name {
+    animation: glitch 0.3s steps(2) 3;
+  }
+  @keyframes glitch {
+    0% { transform: translate(0); }
+    25% { transform: translate(-3px, 2px) skewX(2deg); }
+    50% { transform: translate(3px, -1px) skewX(-2deg); }
+    75% { transform: translate(-1px, 3px) skewX(1deg); }
+    100% { transform: translate(0); }
+  }
+
+  /* ——— SECTION HEADERS ——— */
+  .section-header {
+    padding: 6rem 2rem 3rem;
+    position: relative;
+  }
+  .section-number {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .section-title-cn {
+    font-family: var(--font-cn);
+    font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+    color: var(--text-dim);
+    margin-top: 0.3rem;
+  }
+  .section-line {
+    width: 60px; height: 2px;
+    background: var(--accent);
+    margin-top: 1rem;
+  }
+
+  /* ——— ABOUT ——— */
+  #about .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    padding: 0 2rem 4rem;
+  }
+  #about .about-text {
+    font-size: 0.95rem;
+    line-height: 1.9;
+    color: var(--text);
+  }
+  #about .about-text p { margin-bottom: 1.2rem; }
+  #about .about-text .highlight {
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .stat-item {
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 1.5rem 1rem;
+    text-align: center;
+    background: rgba(255,255,255,0.02);
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--text-dim);
+    margin-top: 0.3rem;
+    text-transform: uppercase;
+  }
+
+  /* ——— TIMELINE ——— */
+  .timeline { padding: 0 2rem 4rem; position: relative; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 2rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(180deg, var(--accent), transparent);
+  }
+  .tl-item {
+    padding-left: 4rem;
+    padding-bottom: 2.5rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+  .tl-item.visible { opacity: 1; transform: translateY(0); }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -4px;
+    top: 4px;
+    width: 9px; height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--glow);
+  }
+  .tl-year {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+  }
+  .tl-title {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin: 0.3rem 0 0.2rem;
+  }
+  .tl-sub {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+  }
+  .tl-desc {
+    font-size: 0.85rem;
+    margin-top: 0.4rem;
+    color: rgba(255,255,255,0.6);
+    max-width: 600px;
+  }
+
+  /* ——— EXHIBITIONS ——— */
+  .exh-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+    padding: 0 2rem 4rem;
+  }
+  .exh-card {
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem;
+    background: rgba(255,255,255,0.02);
+    transition: all 0.4s ease;
+    cursor: default;
+    position: relative;
+    overflow: hidden;
+  }
+  .exh-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .exh-card:hover {
+    border-color: rgba(0,240,255,0.2);
+    transform: translateY(-4px);
+    background: rgba(255,255,255,0.04);
+  }
+  .exh-card:hover::before { opacity: 1; }
+  .exh-tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid var(--accent2);
+    color: var(--accent2);
+    margin-bottom: 1rem;
+    font-family: var(--font-mono);
+  }
+  .exh-card h3 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+  }
+  .exh-card .cn-title {
+    font-family: var(--font-cn);
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 0.3rem;
+  }
+  .exh-role {
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+  }
+  .exh-loc {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ——— PROJECTS ——— */
+  .proj-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    padding: 0 2rem 4rem;
+  }
+  .proj-card {
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem;
+    background: rgba(255,255,255,0.02);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .proj-card::after {
+    content: '→';
+    position: absolute;
+    bottom: 1.5rem; right: 1.5rem;
+    font-size: 1.2rem;
+    color: var(--accent);
+    opacity: 0;
+    transition: opacity 0.4s, transform 0.4s;
+    transform: translateX(-10px);
+  }
+  .proj-card:hover::after { opacity: 1; transform: translateX(0); }
+  .proj-card:hover {
+    border-color: rgba(0,240,255,0.2);
+    background: rgba(255,255,255,0.04);
+  }
+  .proj-year {
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+  .proj-card h3 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+  }
+  .proj-card p {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.6;
+  }
+
+  /* ——— SKILLS ——— */
+  .skills-section { padding: 0 2rem 6rem; }
+  .skill-clusters {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+  .skill-cluster {
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 1.5rem;
+    transition: border-color 0.3s;
+  }
+  .skill-cluster:hover {
+    border-color: var(--accent);
+  }
+  .skill-cluster h4 {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+    text-transform: uppercase;
+  }
+  .skill-cluster .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .skill-cluster .tags span {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.05em;
+  }
+
+  /* ——— CONTACT ——— */
+  #contact {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 4rem 2rem;
+    text-align: center;
+  }
+  #contact h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    font-weight: 200;
+    margin-bottom: 1rem;
+  }
+  .contact-info {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  .contact-info a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.85rem;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+    border-bottom: 1px solid transparent;
+  }
+  .contact-info a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.15);
+    letter-spacing: 0.1em;
+  }
+
+  /* ——— RESPONSIVE ——— */
+  @media (max-width: 768px) {
+    #about .about-grid {
+      grid-template-columns: 1fr;
+    }
+    .proj-grid {
+      grid-template-columns: 1fr;
+    }
+    .exh-grid {
+      grid-template-columns: 1fr;
+    }
+    .timeline::before { left: 1.5rem; }
+    .tl-item { padding-left: 3rem; }
+    .about-stats { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Fade-in for scroll */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Cursor glow */
+  #cursor-glow {
+    position: fixed;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,240,255,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    transition: left 0.1s ease, top 0.1s ease;
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor-glow"></div>
+<canvas id="particle-canvas"></canvas>
+<div class="noise"></div>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-label">✦ Digital Media Artist / Curator / Creative Director · SSR Studio</div>
+    <div class="glitch-wrapper">
+      <h1 class="hero-name">SLYYY</h1>
+      <div style="font-family:var(--font-display); font-size:clamp(1rem, 2.5vw, 2rem); font-weight:200; color:var(--accent2); letter-spacing:0.1em; margin-top:0.5rem; animation:fadeUp 1s 0.5s both;">Muhammad Ali</div>
+    </div>
+    <div class="hero-name-cn">席 磊</div>
+    <div class="hero-title">
+      <span>数字媒体艺术</span>
+      <span>元宇宙策展</span>
+      <span>沉浸式体验</span>
+      <span>交互装置</span>
+      <span>SSR STUDIO 主理</span>
+      <span>品牌商业落地</span>
+    </div>
+  </div>
+  <div class="hero-scroll" onclick="document.getElementById('about').scrollIntoView({behavior:'smooth'})">SCROLL</div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-number">/ 01</div>
+      <h2 class="section-title">About</h2>
+      <div class="section-title-cn">关于我</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text fade-in">
+        <p>
+          <span class="highlight">I craft digital experiences by blending design, storytelling, and technology.</span>
+        </p>
+        <p>
+          数字媒体与新媒体艺术背景的创作者、策展人与商业项目负责人。长期从事数字艺术、交互装置、元宇宙策展、空间体验与品牌商业项目，具备从概念策划、创意设计、技术实现到商业落地与团队协作的完整经验。
+        </p>
+        <p>
+          现任上海加百利文化发展有限公司负责人，同时主理 <span style="color:var(--accent2);">SSR STUDIO</span>（交互媒体咨询工作室），活跃于艺术创作、教育与品牌合作领域。我的实践跨越物理空间与虚拟世界，在 Cryptovoxels 等元宇宙平台构建沉浸式展览，也在上海核心商圈落地高端珠宝品牌的 POP-UP 沉浸空间。
+        </p>
+        <p>
+          从西班牙弗拉明戈舞蹈博物馆的 AR 作品，到新华路社区的数字排毒互动展——每一次创作都是一场关于认知、技术与人文的对话。
+        </p>
+      </div>
+      <div class="fade-in">
+        <div class="about-stats">
+          <div class="stat-item">
+            <div class="stat-num">15+</div>
+            <div class="stat-label">展览与项目</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">12</div>
+            <div class="stat-label">年经验</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">73+</div>
+            <div class="stat-label">Projects</div>
+          </div>
+        </div>
+        <div style="margin-top:1.5rem; padding:1.5rem; border:1px solid rgba(255,255,255,0.06);">
+          <div style="font-size:0.7rem; letter-spacing:0.15em; color:var(--accent); margin-bottom:0.8rem;">EDUCATION</div>
+          <div style="margin-bottom:0.8rem;">
+            <div style="font-size:0.85rem;">伦敦艺术大学 <span style="color:var(--text-dim); font-size:0.7rem;">· 虚拟现实应用技术 硕士</span></div>
+            <div style="font-size:0.75rem; color:var(--text-dim);">2020 – 2022</div>
+          </div>
+          <div style="margin-bottom:0.8rem;">
+            <div style="font-size:0.85rem;">威斯敏斯特大学 <span style="color:var(--text-dim); font-size:0.7rem;">· 交互设计 硕士</span></div>
+            <div style="font-size:0.75rem; color:var(--text-dim);">2019 – 2020</div>
+          </div>
+          <div>
+            <div style="font-size:0.85rem;">中国传媒大学 <span style="color:var(--text-dim); font-size:0.7rem;">· 广播电视编导 本科</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== TIMELINE ===== -->
+<section>
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-number">/ 02</div>
+      <h2 class="section-title">Career Path</h2>
+      <div class="section-title-cn">职业轨迹</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="timeline">
+      <div class="tl-item">
+        <div class="tl-year">2025 · NOW</div>
+        <div class="tl-title">Forevermark × ONE Jewelry</div>
+        <div class="tl-sub">POP-UP 沉浸式空间 · 上海静安久光</div>
+        <div class="tl-desc">国际高端珠宝品牌商业空间——空间概念、视觉系统、灯光与互动装置设计，于上海核心商圈完成商业落地。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2025</div>
+        <div class="tl-title">《数字排毒：把脉"网瘾"，回归健康生活》</div>
+        <div class="tl-sub">策展人 · 新华居委会·宁境·葫芦缘</div>
+        <div class="tl-desc">赛博老中医"数字把脉"趣味互动体验展，倡导健康用网习惯，社区公共艺术实践。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2025</div>
+        <div class="tl-title">《云端花园》元宇宙展览</div>
+        <div class="tl-sub">策展人 · Pure Blue / Cryptovoxels</div>
+        <div class="tl-desc">虚拟宠物墓地——关于爱与记忆的量子云永恒重逢。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2024</div>
+        <div class="tl-title">《炼金》参展《银色血管》数字主题艺术展</div>
+        <div class="tl-sub">参展艺术家 · 蛮象艺术空间，上海</div>
+        <div class="tl-desc">数字主题群展中呈现个人作品《炼金》。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2023</div>
+        <div class="tl-title">《认知所在》—— 元宇宙画廊首展</div>
+        <div class="tl-sub">出品人 / 策展 · Cryptovoxels</div>
+        <div class="tl-desc">区块链元宇宙双展——左侧自然与神秘学，右侧科幻与科技，探索认知的二元对立。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2023</div>
+        <div class="tl-title">《元构新生》· PureBlue Space</div>
+        <div class="tl-sub">元宇宙策展视觉搭建（风语筑）· Cryptovoxels</div>
+        <div class="tl-desc">元宇宙空间视觉系统搭建与策展。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2022</div>
+        <div class="tl-title">AR 作品《敦煌洞见》</div>
+        <div class="tl-sub">参展《Rave Arcave》· 弗朗明哥舞蹈博物馆，西班牙</div>
+        <div class="tl-desc">AR 数字艺术作品在国际艺术舞台展出，连接敦煌文化符号与增强现实技术。</div>
+      </div>
+      <div class="tl-item">
+        <div class="tl-year">2020</div>
+        <div class="tl-title">《Going Home》</div>
+        <div class="tl-sub">参加一个人美术馆首展《Loop》· 上海</div>
+        <div class="tl-desc">个人创作在上海首秀，开启艺术实践之路。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EXHIBITIONS ===== -->
+<section>
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-number">/ 03</div>
+      <h2 class="section-title">Exhibitions & Curation</h2>
+      <div class="section-title-cn">展览与策展</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="exh-grid">
+      <div class="exh-card fade-in">
+        <div class="exh-tag">CURATED</div>
+        <div class="cn-title">数字排毒：把脉"网瘾"</div>
+        <h3>Digital Detox: Cyber Pulse Diagnosis</h3>
+        <div class="exh-role">策展人 · 2025</div>
+        <div class="exh-loc">新华居委会 · 宁境 · 葫芦缘 · 上海</div>
+      </div>
+      <div class="exh-card fade-in">
+        <div class="exh-tag">CURATED</div>
+        <div class="cn-title">云端花园 — 虚拟宠物墓地</div>
+        <h3>Cloud Paradise: Eternal Reunion</h3>
+        <div class="exh-role">策展人 · 2025</div>
+        <div class="exh-loc">Pure Blue · Cryptovoxels</div>
+      </div>
+      <div class="exh-card fade-in">
+        <div class="exh-tag">EXHIBITED</div>
+        <div class="cn-title">炼金 — 银色血管数字艺术展</div>
+        <h3>Alchemy — Silver Vessels</h3>
+        <div class="exh-role">参展艺术家 · 2024</div>
+        <div class="exh-loc">蛮象艺术空间 · 上海</div>
+      </div>
+      <div class="exh-card fade-in">
+        <div class="exh-tag">CURATED</div>
+        <div class="cn-title">认知所在 — 元宇宙画廊首展</div>
+        <h3>Where Recognition Will Be</h3>
+        <div class="exh-role">出品人 / 策展 · 2023</div>
+        <div class="exh-loc">Cryptovoxels</div>
+      </div>
+      <div class="exh-card fade-in">
+        <div class="exh-tag">CURATED</div>
+        <div class="cn-title">元构新生</div>
+        <h3>Meta Construct Rebirth</h3>
+        <div class="exh-role">策展视觉搭建（风语筑）· 2023</div>
+        <div class="exh-loc">PureBlue Space · Cryptovoxels</div>
+      </div>
+      <div class="exh-card fade-in">
+        <div class="exh-tag">EXHIBITED</div>
+        <div class="cn-title">LitGhostPunchWall</div>
+        <h3>Devil Player Exhibition</h3>
+        <div class="exh-role">参展艺术家 · 2023</div>
+        <div class="exh-loc">Cryptovoxels · 上海</div>
+      </div>
+      <div class="exh-card fade-in">
+        <div class="exh-tag">EXHIBITED</div>
+        <div class="cn-title">敦煌洞见 (AR)</div>
+        <h3>Dunhuang Insight</h3>
+        <div class="exh-role">AR 作品参展 · 2022</div>
+        <div class="exh-loc">弗朗明哥舞蹈博物馆 · 西班牙</div>
+      </div>
+      <div class="exh-card fade-in">
+        <div class="exh-tag">EXHIBITED</div>
+        <div class="cn-title">Going Home</div>
+        <h3>Loop Exhibition</h3>
+        <div class="exh-role">参展艺术家 · 2020</div>
+        <div class="exh-loc">一个人美术馆 · 上海</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SSR STUDIO ===== -->
+<section>
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-number">/ 04</div>
+      <h2 class="section-title">SSR STUDIO</h2>
+      <div class="section-title-cn">交互数媒作品集创作咨询支持</div>
+      <div class="section-line"></div>
+    </div>
+    <div style="padding:0 2rem 4rem; display:grid; grid-template-columns:1fr 1fr; gap:3rem;">
+      <div class="fade-in">
+        <div style="border:1px solid rgba(255,255,255,0.06); padding:2rem; background:rgba(255,255,255,0.02); margin-bottom:2rem; display:flex; align-items:center; gap:1.5rem;">
+          <div style="min-width:80px; height:80px; border:2px solid var(--accent2); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:900; font-size:1.8rem; color:var(--accent2); letter-spacing:-0.06em;">
+            SSR
+          </div>
+          <div>
+            <div style="font-family:var(--font-display); font-size:1rem; font-weight:400;">SSR STUDIO</div>
+            <div style="font-size:0.75rem; color:var(--text-dim); letter-spacing:0.1em; margin-top:0.3rem;">INTERACTION MEDIA CONSULTING</div>
+          </div>
+        </div>
+        <p style="font-size:0.9rem; color:rgba(255,255,255,0.65); line-height:1.8; margin-bottom:1rem;">
+          SSR STUDIO 专注于交互与数字媒体领域的留学作品集创作支持。区别于传统作品集机构的应试化模板教学，我们陪伴学生创作真实、可落地的交互/数字媒体作品，在让学生真正掌握创作能力的同时，产出符合海外顶尖院校申请要求的优质作品集。
+        </p>
+        <p style="font-size:0.9rem; color:rgba(255,255,255,0.65); line-height:1.8; margin-bottom:1.5rem;">
+          主创团队均毕业于海外设计/交互/艺术名校，拥有一线项目实操经验，同时具备美本藤校招生资源——既保证作品的专业度，也能精准匹配海外院校的录取偏好。
+        </p>
+        <div style="display:flex; flex-wrap:wrap; gap:0.4rem;">
+          <span style="font-size:0.7rem; padding:0.2rem 0.6rem; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.6);">交互/数媒作品集</span>
+          <span style="font-size:0.7rem; padding:0.2rem 0.6rem; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.6);">留学申请辅导</span>
+          <span style="font-size:0.7rem; padding:0.2rem 0.6rem; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.6);">藤校招生咨询</span>
+          <span style="font-size:0.7rem; padding:0.2rem 0.6rem; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.6);">A-Level/AP/IB 学分支持</span>
+          <span style="font-size:0.7rem; padding:0.2rem 0.6rem; border:1px solid rgba(255,255,255,0.08); background:rgba(255,255,255,0.02); color:rgba(255,255,255,0.6);">选课签证配套</span>
+        </div>
+      </div>
+      <div class="fade-in" style="display:flex; flex-direction:column; justify-content:center;">
+        <div style="border:1px solid rgba(255,255,255,0.06); padding:2rem; background:rgba(255,255,255,0.02);">
+          <div style="font-size:0.7rem; letter-spacing:0.15em; color:var(--accent); margin-bottom:1rem; font-family:var(--font-mono);">SERVICES & PROCESS</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+            <div>
+              <div style="font-size:0.75rem; color:var(--text); font-family:var(--font-display);">底层逻辑梳理</div>
+              <div style="font-size:0.65rem; color:var(--text-dim);">创作本质·调研方法·个人表达</div>
+            </div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--text); font-family:var(--font-display);">全流程辅导</div>
+              <div style="font-size:0.65rem; color:var(--text-dim);">选题→原型→落地→申请适配</div>
+            </div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--text); font-family:var(--font-display);">项目陈述指导</div>
+              <div style="font-size:0.65rem; color:var(--text-dim);">申请文书·作品阐述·面试准备</div>
+            </div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--text); font-family:var(--font-display);">留学一站式</div>
+              <div style="font-size:0.65rem; color:var(--text-dim);">选课指导·签证咨询·入学衔接</div>
+            </div>
+          </div>
+          <div style="margin-top:1rem; padding:1rem; background:rgba(179,136,255,0.06); border:1px solid rgba(179,136,255,0.1);">
+            <div style="font-size:0.7rem; color:var(--accent2); letter-spacing:0.1em;">PRICING</div>
+            <div style="font-size:0.8rem; color:rgba(255,255,255,0.6); margin-top:0.3rem; line-height:1.5;">不做打包套餐，根据学生基础和需求一事一议。标准项目起价 10,000 元，周期 6–12 周。</div>
+          </div>
+          <div style="margin-top:1.2rem; padding-top:1.2rem; border-top:1px solid rgba(255,255,255,0.06);">
+            <a href="https://ssrstudio.vercel.app/" target="_blank" style="color:var(--accent2); text-decoration:none; font-size:0.8rem; font-family:var(--font-mono); letter-spacing:0.05em; transition:color 0.3s;">
+              Visit SSR STUDIO ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== COMMERCIAL PROJECTS ===== -->
+<section>
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-number">/ 05</div>
+      <h2 class="section-title">Commercial Works</h2>
+      <div class="section-title-cn">商业项目</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="proj-grid">
+      <div class="proj-card fade-in">
+        <div class="proj-year">2025</div>
+        <h3>Forevermark × ONE Jewelry</h3>
+        <p>POP-UP 沉浸式空间 · 概念设计、视觉系统、灯光与互动装置 · 上海静安久光</p>
+      </div>
+      <div class="proj-card fade-in">
+        <div class="proj-year">2024</div>
+        <h3>Double Dutch CONTEST SHANGHAI</h3>
+        <p>大型赛事活动视觉与体验设计</p>
+      </div>
+      <div class="proj-card fade-in">
+        <div class="proj-year">2023</div>
+        <h3>Zhangjiang Town IP Design</h3>
+        <p>张江镇 IP 形象设计与品牌系统</p>
+      </div>
+      <div class="proj-card fade-in">
+        <div class="proj-year">2022</div>
+        <h3>SUFE 校园 IP 形象与文创系统</h3>
+        <p>上海财经大学 MBA/EMBA 校园 IP 形象设计、文创产品体系——从设计、制作到报价与交付管理</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SKILLS ===== -->
+<section>
+  <div class="container">
+    <div class="section-header fade-in">
+      <div class="section-number">/ 06</div>
+      <h2 class="section-title">Toolbox</h2>
+      <div class="section-title-cn">技能与工具</div>
+      <div class="section-line"></div>
+    </div>
+    <div class="skills-section">
+      <div class="skill-clusters">
+        <div class="skill-cluster fade-in">
+          <h4>Creative Direction</h4>
+          <div class="tags">
+            <span>概念策划</span>
+            <span>创意设计</span>
+            <span>项目管理</span>
+            <span>商业落地</span>
+          </div>
+        </div>
+        <div class="skill-cluster fade-in">
+          <h4>Digital Tools</h4>
+          <div class="tags">
+            <span>Unity</span>
+            <span>Touch Designer</span>
+            <span>Unreal Engine</span>
+            <span>Blender</span>
+            <span>Figma</span>
+            <span>Arduino</span>
+          </div>
+        </div>
+        <div class="skill-cluster fade-in">
+          <h4>Practice Areas</h4>
+          <div class="tags">
+            <span>数字媒体艺术</span>
+            <span>交互装置</span>
+            <span>元宇宙策展</span>
+            <span>空间体验设计</span>
+            <span>AR/VR</span>
+            <span>AIGC</span>
+          </div>
+        </div>
+        <div class="skill-cluster fade-in">
+          <h4>Design</h4>
+          <div class="tags">
+            <span>空间视觉</span>
+            <span>灯光设计</span>
+            <span>IP 设计</span>
+            <span>文创系统</span>
+            <span>品牌视觉</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact">
+  <div class="container">
+    <h2 class="fade-in">Let's Create Together</h2>
+    <p class="fade-in" style="color:var(--text-dim); font-size:0.85rem; max-width:500px; margin:0 auto;">
+      Open for freelance projects, art collaborations, and full-time roles.
+    </p>
+    <div class="contact-info fade-in">
+      <a href="tel:+8617302119554">+86 173 0211 9554</a>
+      <a href="mailto:Gui550025@163.com">Gui550025@163.com</a>
+      <a href="https://loomy.xunfei.cn/p/_w5a1ojuD2K0/" target="_blank">Xi Lei Muhammad Ali ↗</a>
+      <a href="https://ssrstudio.vercel.app/" target="_blank" style="color:var(--accent2);">SSR STUDIO ↗</a>
+    </div>
+  </div>
+  <div class="footer">
+    <span>© 2025 XI LEI · SSR STUDIO · DIGITAL MEDIA ARTIST</span>
+  </div>
+</section>
+
+<script>
+// ====== Particle Canvas ======
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+let mouseX = -1000, mouseY = -1000;
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+class Particle {
+  constructor() {
+    this.reset();
+  }
+  reset() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 0.5;
+    this.speedX = (Math.random() - 0.5) * 0.3;
+    this.speedY = (Math.random() - 0.5) * 0.3;
+    this.opacity = Math.random() * 0.5 + 0.1;
+    this.hue = Math.random() > 0.5 ? 185 : 260; // cyan or purple
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+    const dx = mouseX - this.x;
+    const dy = mouseY - this.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist < 150) {
+      const force = (150 - dist) / 150 * 0.5;
+      this.x -= dx / dist * force;
+      this.y -= dy / dist * force;
+    }
+    if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+  }
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    const color = this.hue === 185 ? '0, 240, 255' : '179, 136, 255';
+    ctx.fillStyle = `rgba(${color}, ${this.opacity})`;
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 120; i++) {
+  particles.push(new Particle());
+}
+
+let mouseTimeout;
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => { p.update(); p.draw(); });
+  // Draw connections
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i+1; j < particles.length; j++) {
+      const dx = particles[i].x - particles[j].x;
+      const dy = particles[i].y - particles[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.strokeStyle = `rgba(0, 240, 255, ${0.06 * (1 - dist/120)})`;
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animate);
+}
+animate();
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX;
+  mouseY = e.clientY;
+  clearTimeout(mouseTimeout);
+});
+document.addEventListener('mouseleave', () => {
+  mouseX = -1000; mouseY = -1000;
+});
+
+// ====== Cursor glow ======
+const cursorGlow = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', e => {
+  cursorGlow.style.left = e.clientX + 'px';
+  cursorGlow.style.top = e.clientY + 'px';
+});
+
+// ====== Scroll Animations ======
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in, .tl-item').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
